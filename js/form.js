@@ -16,37 +16,43 @@ class IntakeFormController {
    * Initialize form
    */
   init() {
-    this.bindEvents();
-    this.populateFieldOptions();
-    this.showStep(1);
-    this.updateProgressIndicator();
-  }
+    // Bind form submission
+    const form = document.getElementById('intakeForm');
+    if (form) {
+      form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+    }
 
-  /**
-   * Bind event listeners
-   */
-  bindEvents() {
-    // Next button
+    // Bind next button
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) {
       nextBtn.addEventListener('click', () => this.handleNext());
     }
 
-    // Form submission
-    const form = document.getElementById('intakeForm');
-    if (form) {
-      form.addEventListener('submit', (e) => this.handleSubmit(e));
+    // Bind back button
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => this.handleBack());
     }
 
-    // Real-time validation
-    const inputs = document.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-      input.addEventListener('blur', () => this.validateCurrentField(input));
-      input.addEventListener('change', () => this.handleFieldChange(input));
-    });
-
+    // Initialize form fields
+    this.initializeFormFields();
+    
+    // Show first step
+    this.showStep(1);
+    
     // Conditional field logic
     this.bindConditionalLogic();
+  }
+
+  /**
+   * Initialize form fields with options
+   */
+  initializeFormFields() {
+    this.populateSelectOptions('buyer_category', CONFIG.FIELD_OPTIONS.buyerCategories);
+    this.populateSelectOptions('financing_plan', CONFIG.FIELD_OPTIONS.financingPlans);
+    this.populateSelectOptions('land_status', CONFIG.FIELD_OPTIONS.landStatuses);
+    this.populateSelectOptions('build_budget', CONFIG.FIELD_OPTIONS.buildBudgets);
+    this.populateSelectOptions('construction_timeline', CONFIG.FIELD_OPTIONS.constructionTimelines);
   }
 
   /**
@@ -123,44 +129,77 @@ class IntakeFormController {
   }
 
   /**
-   * Populate field options from config
+   * Handle next button click
    */
-  populateFieldOptions() {
-    // Buyer categories
-    this.populateRadioOptions('buyer_category', CONFIG.FIELD_OPTIONS.buyerCategories);
-    
-    // Financing plans
-    this.populateRadioOptions('financing_plan', CONFIG.FIELD_OPTIONS.financingPlans);
-    
-    // Land statuses
-    this.populateRadioOptions('land_status', CONFIG.FIELD_OPTIONS.landStatuses);
-    
-    // Build budgets
-    this.populateSelectOptions('build_budget', CONFIG.FIELD_OPTIONS.buildBudgets);
-    
-    // Construction timelines
-    this.populateSelectOptions('construction_timeline', CONFIG.FIELD_OPTIONS.constructionTimelines);
+  handleNext() {
+    if (this.isSubmitting) return;
+
+    // Validate current step
+    const errors = this.validateCurrentStep();
+    if (errors.length > 0) {
+      this.showErrors(errors);
+      return;
+    }
+
+    // Collect current step data
+    this.collectCurrentStepData();
+
+    // Move to next step or submit
+    if (this.currentStep < CONFIG.STEPS.TOTAL) {
+      this.showStep(this.currentStep + 1);
+    } else {
+      this.submitForm();
+    }
   }
 
   /**
-   * Populate radio button options
+   * Handle back button click
    */
-  populateRadioOptions(fieldName, options) {
-    const container = document.getElementById(`${fieldName}-options`);
-    if (!container) return;
+  handleBack() {
+    if (this.currentStep > 1) {
+      this.showStep(this.currentStep - 1);
+    }
+  }
 
-    container.innerHTML = '';
-    
-    options.forEach(option => {
-      const div = document.createElement('div');
-      div.className = 'radio-option';
-      
-      div.innerHTML = `
-        <input type="radio" id="${fieldName}_${option.value}" name="${fieldName}" value="${option.value}">
-        <label for="${fieldName}_${option.value}">${option.label}</label>
-      `;
-      
-      container.appendChild(div);
+  /**
+   * Validate current step
+   */
+  validateCurrentStep() {
+    const currentStepElement = document.getElementById(`step-${this.currentStep}`);
+    if (!currentStepElement) return [];
+
+    const requiredFields = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
+    const errors = [];
+
+    requiredFields.forEach(field => {
+      if (!field.value.trim()) {
+        const label = currentStepElement.querySelector(`label[for="${field.id}"]`);
+        const fieldName = label ? label.textContent.replace('*', '').trim() : field.name;
+        errors.push(`${fieldName} is required`);
+      }
+    });
+
+    return errors;
+  }
+
+  /**
+   * Collect current step data
+   */
+  collectCurrentStepData() {
+    const currentStepElement = document.getElementById(`step-${this.currentStep}`);
+    if (!currentStepElement) return;
+
+    const inputs = currentStepElement.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      if (input.type === 'radio') {
+        if (input.checked) {
+          this.formData[input.name] = input.value;
+        }
+      } else if (input.type === 'checkbox') {
+        this.formData[input.name] = input.checked;
+      } else {
+        this.formData[input.name] = input.value;
+      }
     });
   }
 
@@ -169,13 +208,14 @@ class IntakeFormController {
    */
   populateSelectOptions(fieldName, options) {
     const select = document.getElementById(fieldName);
-    if (!select) return;
+    if (!select || !options) return;
 
     // Clear existing options except the first (placeholder)
     while (select.children.length > 1) {
       select.removeChild(select.lastChild);
     }
-    
+
+    // Add new options
     options.forEach(option => {
       const optionElement = document.createElement('option');
       optionElement.value = option.value;
@@ -203,8 +243,22 @@ class IntakeFormController {
       this.populateReviewSection();
     }
 
-    // Update button text
+    // Update button visibility and text
+    this.updateButtonStates(stepNumber);
+
+    this.currentStep = stepNumber;
+    this.updateProgressIndicator();
+  }
+
+  /**
+   * Update button states based on current step
+   */
+  updateButtonStates(stepNumber) {
     const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const buttonContainer = document.querySelector('.button-container');
+
+    // Update next button
     if (nextBtn) {
       if (stepNumber === CONFIG.STEPS.TOTAL) {
         nextBtn.textContent = 'Submit Application';
@@ -215,8 +269,16 @@ class IntakeFormController {
       }
     }
 
-    this.currentStep = stepNumber;
-    this.updateProgressIndicator();
+    // Update back button visibility
+    if (backBtn) {
+      if (stepNumber === 1) {
+        backBtn.style.display = 'none';
+        buttonContainer?.classList.add('single-button');
+      } else {
+        backBtn.style.display = 'block';
+        buttonContainer?.classList.remove('single-button');
+      }
+    }
   }
 
   /**
@@ -288,55 +350,6 @@ class IntakeFormController {
   }
 
   /**
-   * Handle next button click
-   */
-  async handleNext() {
-    if (this.isSubmitting) return;
-
-    // Collect current step data
-    this.collectStepData();
-
-    // Validate current step
-    const errors = validationService.validateStep(this.currentStep, this.formData);
-    
-    if (errors.length > 0) {
-      this.showErrors(errors);
-      return;
-    }
-
-    this.clearErrors();
-
-    // If last step, submit form
-    if (this.currentStep === CONFIG.STEPS.TOTAL) {
-      await this.submitForm();
-    } else {
-      // Move to next step
-      this.showStep(this.currentStep + 1);
-    }
-  }
-
-  /**
-   * Collect data from current step
-   */
-  collectStepData() {
-    const currentStepElement = document.getElementById(`step-${this.currentStep}`);
-    if (!currentStepElement) return;
-
-    const inputs = currentStepElement.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-      if (input.type === 'radio') {
-        if (input.checked) {
-          this.formData[input.name] = input.value;
-        }
-      } else if (input.type === 'checkbox') {
-        this.formData[input.name] = input.checked;
-      } else {
-        this.formData[input.name] = input.value;
-      }
-    });
-  }
-
-  /**
    * Collect all form data
    */
   collectAllFormData() {
@@ -391,29 +404,33 @@ class IntakeFormController {
   /**
    * Handle form submit event
    */
-  handleSubmit(e) {
+  handleFormSubmit(e) {
     e.preventDefault();
     this.handleNext();
   }
 
   /**
-   * Validate current field
+   * Show loading state
    */
-  validateCurrentField(input) {
-    const fieldName = input.name;
-    const value = input.type === 'checkbox' ? input.checked : input.value;
+  showLoading(show) {
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
     
-    const errors = validationService.validateField(fieldName, value, this.formData);
-    
-    const errorContainer = input.parentElement.querySelector('.field-error');
-    if (errorContainer) {
-      if (errors.length > 0) {
-        errorContainer.textContent = errors[0];
-        errorContainer.style.display = 'block';
-        input.classList.add('error');
-      } else {
-        errorContainer.style.display = 'none';
-        input.classList.remove('error');
+    if (show) {
+      if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Submitting...';
+      }
+      if (backBtn) {
+        backBtn.disabled = true;
+      }
+    } else {
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        this.updateButtonStates(this.currentStep);
+      }
+      if (backBtn) {
+        backBtn.disabled = false;
       }
     }
   }
@@ -422,52 +439,16 @@ class IntakeFormController {
    * Show errors
    */
   showErrors(errors) {
-    const errorContainer = document.getElementById('errorContainer');
-    if (!errorContainer) return;
+    // Clear previous errors
+    const errorElements = document.querySelectorAll('.field-error');
+    errorElements.forEach(el => el.textContent = '');
 
-    errorContainer.innerHTML = `
-      <div class="error-message">
-        <h4>Please correct the following errors:</h4>
-        <ul>
-          ${errors.map(error => `<li>${error}</li>`).join('')}
-        </ul>
-      </div>
-    `;
-    errorContainer.style.display = 'block';
-    
-    // Scroll to top to show errors
-    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  /**
-   * Clear errors
-   */
-  clearErrors() {
-    const errorContainer = document.getElementById('errorContainer');
-    if (errorContainer) {
-      errorContainer.style.display = 'none';
-    }
-
-    // Clear field-level errors
-    const fieldErrors = document.querySelectorAll('.field-error');
-    fieldErrors.forEach(error => error.style.display = 'none');
-
-    const errorInputs = document.querySelectorAll('.error');
-    errorInputs.forEach(input => input.classList.remove('error'));
-  }
-
-  /**
-   * Show loading state
-   */
-  showLoading(show) {
-    const nextBtn = document.getElementById('nextBtn');
-    if (nextBtn) {
-      if (show) {
-        nextBtn.disabled = true;
-        nextBtn.textContent = 'Submitting...';
-      } else {
-        nextBtn.disabled = false;
-        nextBtn.textContent = this.currentStep === CONFIG.STEPS.TOTAL ? 'Submit Application' : 'Next';
+    // Show new errors
+    if (errors.length > 0) {
+      const firstError = document.querySelector('.field-error');
+      if (firstError) {
+        firstError.textContent = errors.join(', ');
+        firstError.style.display = 'block';
       }
     }
   }
@@ -476,14 +457,14 @@ class IntakeFormController {
    * Show success message
    */
   showSuccess(message) {
-    const container = document.querySelector('.form-container');
-    if (container) {
-      container.innerHTML = `
+    // Hide form and show success message
+    const form = document.getElementById('intakeForm');
+    if (form) {
+      form.innerHTML = `
         <div class="success-message">
-          <div class="success-icon">✓</div>
-          <h2>Application Submitted Successfully!</h2>
-          <p>${message || 'Thank you for your submission. We will review your application and contact you soon.'}</p>
-          <p>You can close this window or <a href="javascript:location.reload()">submit another application</a>.</p>
+          <h2>Thank You!</h2>
+          <p>${message}</p>
+          <p>We'll be in touch soon to discuss your project.</p>
         </div>
       `;
     }
@@ -492,6 +473,6 @@ class IntakeFormController {
 
 // Initialize form when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new IntakeFormController();
+  window.formController = new IntakeFormController();
 });
 
