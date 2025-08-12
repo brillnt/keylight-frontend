@@ -48,11 +48,44 @@ class IntakeFormController {
    * Initialize form fields with options
    */
   initializeFormFields() {
-    this.populateSelectOptions('buyer_category', CONFIG.FIELD_OPTIONS.buyerCategories);
-    this.populateSelectOptions('financing_plan', CONFIG.FIELD_OPTIONS.financingPlans);
-    this.populateSelectOptions('land_status', CONFIG.FIELD_OPTIONS.landStatuses);
+    // Create radio button options
+    this.createRadioOptions('buyer_category', CONFIG.FIELD_OPTIONS.buyerCategories);
+    this.createRadioOptions('financing_plan', CONFIG.FIELD_OPTIONS.financingPlans);
+    this.createRadioOptions('land_status', CONFIG.FIELD_OPTIONS.landStatuses);
+    
+    // Populate select dropdowns
     this.populateSelectOptions('build_budget', CONFIG.FIELD_OPTIONS.buildBudgets);
     this.populateSelectOptions('construction_timeline', CONFIG.FIELD_OPTIONS.constructionTimelines);
+  }
+
+  /**
+   * Create radio button options
+   */
+  createRadioOptions(fieldName, options) {
+    const container = document.getElementById(`${fieldName}-options`);
+    if (!container || !options) return;
+
+    container.innerHTML = '';
+
+    options.forEach(option => {
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'radio-option';
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.id = `${fieldName}_${option.value}`;
+      input.name = fieldName;
+      input.value = option.value;
+      input.required = true;
+
+      const label = document.createElement('label');
+      label.htmlFor = input.id;
+      label.textContent = option.label;
+
+      optionDiv.appendChild(input);
+      optionDiv.appendChild(label);
+      container.appendChild(optionDiv);
+    });
   }
 
   /**
