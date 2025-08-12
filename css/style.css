@@ -1,0 +1,500 @@
+/**
+ * Keylight Intake Form Styles
+ * Clean, professional design with generous white space
+ */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 2rem 0;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Progress Indicator */
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4rem;
+  padding: 2rem 0;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #bdc3c7;
+  margin: 0 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.progress-dot.active {
+  background: #3498db;
+  transform: scale(1.3);
+}
+
+.progress-dot.completed {
+  background: #27ae60;
+}
+
+.progress-dot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 2rem;
+  height: 2px;
+  background: #bdc3c7;
+  transform: translateY(-50%);
+}
+
+.progress-dot.completed:not(:last-child)::after {
+  background: #27ae60;
+}
+
+/* Form Container */
+.form-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 4rem;
+  margin-bottom: 2rem;
+}
+
+/* Form Steps */
+.form-step {
+  display: none;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Step Headers */
+.step-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.step-header h2 {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.step-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 2.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.form-group.required label::after {
+  content: ' *';
+  color: #e74c3c;
+}
+
+/* Input Styles */
+.form-control {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-control.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+/* Textarea */
+textarea.form-control {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Radio Options */
+.radio-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.radio-option {
+  position: relative;
+}
+
+.radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-option label {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.radio-option label::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #bdc3c7;
+  border-radius: 50%;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.radio-option input[type="radio"]:checked + label {
+  border-color: #3498db;
+  background: #f8fbff;
+}
+
+.radio-option input[type="radio"]:checked + label::before {
+  border-color: #3498db;
+  background: #3498db;
+  box-shadow: inset 0 0 0 3px white;
+}
+
+/* Checkbox Styles */
+.checkbox-group {
+  margin-top: 1.5rem;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.checkbox-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 1rem;
+  accent-color: #3498db;
+}
+
+.checkbox-option label {
+  margin-bottom: 0;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+/* Conditional Fields */
+.conditional-field {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  min-width: 140px;
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-submit {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button Container */
+.button-container {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* Error Messages */
+.error-container {
+  margin-bottom: 2rem;
+  display: none;
+}
+
+.error-message {
+  background: #fdf2f2;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: #721c24;
+}
+
+.error-message h4 {
+  margin-bottom: 1rem;
+  color: #721c24;
+}
+
+.error-message ul {
+  margin-left: 1.5rem;
+}
+
+.error-message li {
+  margin-bottom: 0.5rem;
+}
+
+.field-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: #27ae60;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 2rem;
+  font-weight: bold;
+}
+
+.success-message h2 {
+  color: #27ae60;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.success-message p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-message a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.success-message a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem 0.5rem;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .form-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .progress-dot {
+    margin: 0 0.5rem;
+  }
+  
+  .progress-dot:not(:last-child)::after {
+    width: 1rem;
+  }
+  
+  .radio-options {
+    gap: 0.8rem;
+  }
+  
+  .radio-option label {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .btn {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    margin-bottom: 2rem;
+  }
+  
+  .progress-container {
+    margin-bottom: 2rem;
+  }
+  
+  .form-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .step-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .radio-option label::before {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+
+/* Review Section */
+.review-section {
+  margin-bottom: 2rem;
+}
+
+.review-section h3 {
+  color: #2c3e50;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.review-section h3:first-child {
+  margin-top: 0;
+}
+
+.review-item {
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.review-item strong {
+  min-width: 150px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.review-item span {
+  color: #7f8c8d;
+  flex: 1;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+

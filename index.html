@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keylight Intake Form</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Keylight Intake Form</h1>
+            <p>Tell us about your building project and we'll help bring your vision to life.</p>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container">
+            <div class="progress-dot active"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Error Container -->
+            <div id="errorContainer" class="error-container"></div>
+
+            <!-- Main Form -->
+            <form id="intakeForm" novalidate>
+                
+                <!-- Step 1: Contact Information -->
+                <div id="step-1" class="form-step">
+                    <div class="step-header">
+                        <h2>Contact Information</h2>
+                        <p>Let's start with your basic contact details</p>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control" required>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="email_address">Email Address</label>
+                        <input type="email" id="email_address" name="email_address" class="form-control" required>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number" class="form-control" required>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company_name">Company Name (Optional)</label>
+                        <input type="text" id="company_name" name="company_name" class="form-control">
+                        <div class="field-error"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Project Type -->
+                <div id="step-2" class="form-step">
+                    <div class="step-header">
+                        <h2>Project Type</h2>
+                        <p>Help us understand what type of project you're planning</p>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>What best describes you?</label>
+                        <div id="buyer_category-options" class="radio-options">
+                            <!-- Options populated by JavaScript -->
+                        </div>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>How do you plan to finance your build?</label>
+                        <div id="financing_plan-options" class="radio-options">
+                            <!-- Options populated by JavaScript -->
+                        </div>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="interested_in_preferred_lender" name="interested_in_preferred_lender">
+                            <label for="interested_in_preferred_lender">I am interested in using Keylight's preferred lender</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Land & Location -->
+                <div id="step-3" class="form-step">
+                    <div class="step-header">
+                        <h2>Land & Location</h2>
+                        <p>Tell us about your building site</p>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Do you currently own land for your project?</label>
+                        <div id="land_status-options" class="radio-options">
+                            <!-- Options populated by JavaScript -->
+                        </div>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <!-- Conditional: Own Land -->
+                    <div id="lot-address-field" class="conditional-field" style="display: none;">
+                        <div class="form-group required">
+                            <label for="lot_address">Enter the address of your lot</label>
+                            <textarea id="lot_address" name="lot_address" class="form-control" rows="3" placeholder="Street address, city, state, zip code"></textarea>
+                            <div class="field-error"></div>
+                        </div>
+                    </div>
+
+                    <!-- Conditional: Need Land -->
+                    <div id="help-finding-field" class="conditional-field" style="display: none;">
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="needs_help_finding_land" name="needs_help_finding_land">
+                                <label for="needs_help_finding_land">Do you need help finding buildable land?</label>
+                            </div>
+                        </div>
+
+                        <div id="preferred-area-field" class="form-group" style="display: none;">
+                            <label for="preferred_area_description">What area or neighborhood would you like to build in?</label>
+                            <textarea id="preferred_area_description" name="preferred_area_description" class="form-control" rows="3" placeholder="Describe your preferred location, neighborhood, or general area"></textarea>
+                            <div class="field-error"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Project Details -->
+                <div id="step-4" class="form-step">
+                    <div class="step-header">
+                        <h2>Project Details</h2>
+                        <p>Share your project timeline and budget</p>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="build_budget">Estimated Build Budget (Excluding Land)</label>
+                        <select id="build_budget" name="build_budget" class="form-control" required>
+                            <option value="">Select your budget range</option>
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="construction_timeline">Timeline to Start Construction</label>
+                        <select id="construction_timeline" name="construction_timeline" class="form-control" required>
+                            <option value="">Select your timeline</option>
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                        <div class="field-error"></div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="project_description">Tell us about your project</label>
+                        <textarea id="project_description" name="project_description" class="form-control" rows="5" placeholder="Describe your vision, special requirements, style preferences, or any other details that would help us understand your project" required></textarea>
+                        <div class="field-error"></div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Review & Submit -->
+                <div id="step-5" class="form-step">
+                    <div class="step-header">
+                        <h2>Review & Submit</h2>
+                        <p>Please review your information and submit your application</p>
+                    </div>
+
+                    <div class="review-section">
+                        <h3>Contact Information</h3>
+                        <div class="review-item">
+                            <strong>Name:</strong> <span id="review-name"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Email:</strong> <span id="review-email"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Phone:</strong> <span id="review-phone"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Company:</strong> <span id="review-company"></span>
+                        </div>
+
+                        <h3>Project Type</h3>
+                        <div class="review-item">
+                            <strong>Buyer Category:</strong> <span id="review-buyer-category"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Financing:</strong> <span id="review-financing"></span>
+                        </div>
+
+                        <h3>Land & Location</h3>
+                        <div class="review-item">
+                            <strong>Land Status:</strong> <span id="review-land-status"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Location Details:</strong> <span id="review-location"></span>
+                        </div>
+
+                        <h3>Project Details</h3>
+                        <div class="review-item">
+                            <strong>Budget:</strong> <span id="review-budget"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Timeline:</strong> <span id="review-timeline"></span>
+                        </div>
+                        <div class="review-item">
+                            <strong>Description:</strong> <span id="review-description"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="terms_agreement" name="terms_agreement" required>
+                            <label for="terms_agreement">I agree to be contacted by Keylight regarding my project inquiry</label>
+                        </div>
+                        <div class="field-error"></div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="button-container">
+                    <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/config.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/form.js"></script>
+</body>
+</html>
+
